@@ -1,73 +1,72 @@
 # PromptBlocks
 
-> Desktop prompt-engineering IDE — compose, test, optimize, and export LLM prompts with a visual block-based workflow.
+> 桌面级提示词工程 IDE —— 以可视化模块化工作流编排、测试、优化并导出 LLM 提示词。
 
-PromptBlocks is a **PySide6 / QML** desktop application that brings systematic prompt engineering
-to your local machine.  It lets you assemble prompts from modular *blocks*, wire them together,
-test them against multiple LLMs, optimize them iteratively, and export to `.promptx` (a portable
-JSON-based exchange format).
-
----
-
-## Features
-
-### Modular Prompt Editor
-- **9 block types**: Identity & Role, Instruction, Example, Format Constraint, Reasoning,
-  Validation, Data Management, Flow Control, Pre/Post Process
-- Drag-and-drop canvas to re-order and arrange blocks
-- AI-assisted content generation for each block
-
-### Prompt Testing Suite
-- **Quick Test** — run a single prompt and get five-dimension quality scores
-- **Batch Test** — compare multiple variants side-by-side with statistical analysis
-- **Red Team** — automated adversarial testing (prompt injection, jailbreak, etc.)
-- CSV import/export for bulk test cases
-
-### Iterative Optimization
-- **Single-turn optimizer** — refine raw user input automatically
-- **Three-step optimizer** — analyze → optimize → verify loop with score comparison
-- Version management with snapshots and rollback
-
-### Knowledge & Variable Management
-- Reusable variables with scoping (global / template / block)
-- Knowledge base entries with tags and source tracking
-- Tool definitions with schema and endpoint configuration
-
-### Export & Interchange
-- `.promptx` — portable JSON-based prompt exchange format
-- Markdown, JSON, CSV, TXT exports for documentation
-
-### Desktop-first Experience
-- Fluent Design with acrylic/glass aesthetic
-- Phosphor icon system (PUA-coded, consistent across themes)
-- Frameless window with native Windows DWM shadow
-- Hi-DPI support at all scaling levels
+PromptBlocks 是一款基于 **PySide6 / QML** 的桌面应用，将系统化提示词工程带入本地环境。
+你可以将提示词组装为模块化的*块（Block）*，将它们连接在一起，针对多个大模型进行测试，
+迭代优化，并导出为 `.promptx`（一种可移植的 JSON 交换格式）。
 
 ---
 
-## Project Structure
+## 功能特性
+
+### 模块化提示词编辑器
+- **9 种模块类型**：身份角色、指令说明、示例参考、格式约束、推理链、
+  验证检查、数据管理、流程控制、前后处理
+- 拖拽式画布，自由排列和组合模块
+- 每个模块支持 AI 辅助生成内容
+
+### 提示词测试套件
+- **快速测试** — 运行单条提示词，获取五维度质量评分
+- **批量测试** — 多版本并排对比，附带统计分析
+- **红队测试** — 自动化对抗性测试（提示词注入、越狱等）
+- 支持 CSV 导入/导出批量测试用例
+
+### 迭代优化
+- **单轮优化器** — 自动精炼原始用户输入
+- **三步优化器** — 分析 → 优化 → 验证循环，附带评分对比
+- 版本管理，支持快照与回滚
+
+### 知识与变量管理
+- 可复用变量，支持作用域（全局 / 模板 / 模块）
+- 知识库条目，支持标签和来源追溯
+- 工具定义，支持 Schema 和端点配置
+
+### 导出与交换
+- `.promptx` — 可移植的 JSON 提示词交换格式
+- 支持 Markdown、JSON、CSV、TXT 格式导出
+
+### 桌面原生体验
+- Fluent Design 亚克力/毛玻璃美学风格
+- Phosphor 图标系统（PUA 编码，跨主题风格统一）
+- 无边框窗口，原生 Windows DWM 阴影
+- 支持所有缩放级别的 Hi-DPI 适配
+
+---
+
+## 项目结构
 
 ```
 promptblocks/
 ├── src/
-│   └── promptblocks/           # Main Python package
-│       ├── app.py              # QApplication + QML engine bootstrap
-│       ├── config.py           # LLM config, QSettings-based persistence
-│       ├── json_utils.py       # LLM JSON output repair & safe parsing
-│       ├── main.py             # CLI entry point
-│       ├── db/                 # SQLAlchemy ORM + CRUD + Alembic migrations
-│       │   ├── models.py       # ORM models (Project, Block, Variable, ...)
-│       │   ├── crud.py         # Typed CRUD helpers
-│       │   ├── engine.py       # Engine factory + auto-migration trigger
-│       │   ├── session.py      # Context-managed DB sessions
-│       │   └── base.py         # Declarative base
-│       ├── models/             # QAbstractListModel implementations
+│   └── promptblocks/           # 主 Python 包
+│       ├── app.py              # QApplication + QML 引擎启动
+│       ├── config.py           # LLM 配置，基于 QSettings 持久化
+│       ├── json_utils.py       # LLM JSON 输出修复与安全解析
+│       ├── main.py             # CLI 入口
+│       ├── db/                 # SQLAlchemy ORM + CRUD + Alembic 迁移
+│       │   ├── models.py       # ORM 模型（Project, Block, Variable 等）
+│       │   ├── crud.py         # 类型化 CRUD 辅助
+│       │   ├── engine.py       # 引擎工厂 + 自动迁移触发
+│       │   ├── session.py      # 上下文管理器数据库会话
+│       │   └── base.py         # 声明式基类
+│       ├── models/             # QAbstractListModel 实现
 │       │   ├── module_card_model.py
 │       │   ├── variable_model.py
 │       │   ├── knowledge_model.py
 │       │   ├── tool_model.py
 │       │   └── test_result_model.py
-│       ├── viewmodels/         # QObject-based ViewModel layer
+│       ├── viewmodels/         # 基于 QObject 的 ViewModel 层
 │       │   ├── editor_viewmodel.py
 │       │   ├── test_viewmodel.py
 │       │   ├── optimizer_viewmodel.py
@@ -78,185 +77,184 @@ promptblocks/
 │       │   ├── export_viewmodel.py
 │       │   ├── import_viewmodel.py
 │       │   └── ...
-│       ├── compilers/          # Prompt compilation & LLM client
-│       │   ├── llm_client.py   # LiteLLM wrapper with retry + threading lock
-│       │   ├── cache.py        # In-memory LRU compile cache
+│       ├── compilers/          # 提示词编译与 LLM 客户端
+│       │   ├── llm_client.py   # LiteLLM 封装，含重试 + 线程锁
+│       │   ├── cache.py        # 内存 LRU 编译缓存
 │       │   └── ...
-│       ├── synthesis/          # IR builder & prompt synthesizer
-│       │   ├── ir.py           # IRBlock, IRGraph, topological sort
+│       ├── synthesis/          # IR 构建器与提示词合成器
+│       │   ├── ir.py           # IRBlock, IRGraph, 拓扑排序
 │       │   └── synthesizer.py  # PromptSynthesizer
-│       ├── testing/            # Test runner & validators
-│       │   ├── runner.py       # Thread-based test execution
-│       │   └── validator.py    # Schema validation for test results
-│       ├── processors/         # Pipeline processing engine
-│       ├── highlighters/       # Syntax highlighting
-│       ├── qmlhelpers/         # QML-facing Python helpers (syntax checker, etc.)
-│       ├── undo/               # QUndoStack-based undo management
-│       ├── workers/            # Background LLM workers
-│       ├── qml/                # QML UI layer
-│       │   ├── main.qml        # Root window
-│       │   ├── Theme.qml       # Fluent Design theme singleton
-│       │   ├── Icons.qml       # Icon glyph registry
-│       │   ├── SetupWizard.qml # First-run LLM configuration
-│       │   ├── qmldir          # QML module definition
-│       │   ├── components/     # 30+ reusable UI components
-│       │   └── views/          # View-level QML (MainView, TestPanel, ...)
+│       ├── testing/            # 测试运行器与校验器
+│       │   ├── runner.py       # 基于线程的测试执行
+│       │   └── validator.py    # 测试结果 Schema 校验
+│       ├── processors/         # 流水线处理引擎
+│       ├── highlighters/       # 语法高亮
+│       ├── qmlhelpers/         # QML 端 Python 辅助（语法检查器等）
+│       ├── undo/               # 基于 QUndoStack 的撤销管理
+│       ├── workers/            # 后台 LLM 工作线程
+│       ├── qml/                # QML UI 层
+│       │   ├── main.qml        # 根窗口
+│       │   ├── Theme.qml       # Fluent Design 主题单例
+│       │   ├── Icons.qml       # 图标字形注册表
+│       │   ├── SetupWizard.qml # 首次运行 LLM 配置向导
+│       │   ├── qmldir          # QML 模块定义
+│       │   ├── components/     # 30+ 可复用 UI 组件
+│       │   └── views/          # 视图级 QML（MainView, TestPanel 等）
 │       ├── assets/
-│       │   └── fonts/          # Phosphor icon fonts (Regular, Bold, Fill)
+│       │   └── fonts/          # Phosphor 图标字体（Regular, Bold, Fill）
 │       └── resources/
-│           └── icons/          # Application icon (.ico)
-├── alembic/                    # Database migration scripts
+│           └── icons/          # 应用图标 (.ico)
+├── alembic/                    # 数据库迁移脚本
 │   ├── env.py
 │   ├── script.py.mako
 │   └── versions/
 │       └── de6b56f35aca_redesign_v2.py
-├── scripts/                    # Build & maintenance scripts
+├── scripts/                    # 构建与维护脚本
 │   ├── build.py
 │   ├── build_windows.py
 │   ├── diagnose_startup.py
 │   └── verify_build.py
-├── installer/                  # Windows NSIS installer config
+├── installer/                  # Windows NSIS 安装程序配置
 │   └── promptblocks_installer.nsi
-├── logo-design/                # Brand assets
+├── logo-design/                # 品牌素材
 │   ├── PB-logo.svg
 │   └── PB字母拼图logo设计.png
-├── tests/                      # Pytest test suite
+├── tests/                      # Pytest 测试套件
 │   ├── conftest.py
 │   ├── test_compilers.py
 │   ├── test_synthesis.py
 │   └── test_*_crud.py
-├── alembic.ini                 # Alembic configuration
-├── launch.py                   # Direct launch script (bypasses package entry point)
-├── pyproject.toml              # Project metadata & tool config
+├── alembic.ini                 # Alembic 配置
+├── launch.py                   # 直接启动脚本（绕过包入口点）
+├── pyproject.toml              # 项目元数据与工具配置
 └── README.md
 ```
 
 ---
 
-## Prerequisites
+## 环境要求
 
 - **Python ≥ 3.11**
-- **pip** or a compatible package manager
-- **Windows 10/11** (primary target; macOS/Linux may work with caveats)
+- **pip** 或兼容的包管理器
+- **Windows 10/11**（主要目标平台；macOS/Linux 可能可用但未充分测试）
 
 ---
 
-## Installation
+## 安装
 
-### 1. Clone and set up a virtual environment
+### 1. 克隆并创建虚拟环境
 
 ```bash
-git clone <repo-url> promptblocks
-cd promptblocks
+git clone https://github.com/liangzhi879-a11y/Prompt-Blocks
+cd Prompt-Blocks
 python -m venv .venv
 .venv\Scripts\activate   # Windows
 # source .venv/bin/activate  # macOS/Linux
 ```
 
-### 2. Install dependencies
+### 2. 安装依赖
 
 ```bash
 pip install -e ".[dev]"
 ```
 
-Core dependencies:
-- `pyside6` — Qt for Python (QML + Widgets)
-- `sqlalchemy` + `alembic` — ORM and schema migrations
-- `litellm` — Unified LLM API client (supports 100+ providers)
-- `pydantic` — Data validation
+核心依赖：
+- `pyside6` — Qt for Python（QML + Widgets）
+- `sqlalchemy` + `alembic` — ORM 与数据库迁移
+- `litellm` — 统一 LLM API 客户端（支持 100+ 厂商）
+- `pydantic` — 数据校验
 
-Dev dependencies: `pytest`, `ruff`, `mypy`, `pyinstaller`
+开发依赖：`pytest`、`ruff`、`mypy`、`pyinstaller`
 
-### 3. Launch the application
+### 3. 启动应用
 
 ```bash
-# Via package entry point (after pip install -e .)
+# 通过包入口点（pip install -e . 后）
 promptblocks
 
-# Or directly (handles Chinese path encoding issues)
+# 或直接启动（可处理中文路径编码问题）
 python launch.py
 ```
 
-> **Note:** On first launch, the Setup Wizard will guide you through configuring
-> your LLM provider (API key, base URL, model name).  Test-specific API keys
-> can be configured separately in the Model Configuration dialog.
+> **提示：** 首次启动时，设置向导将引导你配置 LLM 厂商（API 密钥、Base URL、模型名称）。
+> 测试专用的 API 密钥可在模型配置对话框中单独设置。
 
 ---
 
-## Usage
+## 使用指南
 
-### Quick Start
+### 快速上手
 
-1. **Configure LLM** — Set your API key and model in the Setup Wizard (auto-opens on first run).
-2. **Create a prompt** — Click module type buttons in the left panel to add blocks.
-3. **Edit content** — Type or use AI generation for each block.
-4. **Test** — Switch to the Test panel, run a quick test, see scores.
-5. **Optimize** — Use the three-step optimizer for iterative improvement.
-6. **Export** — Save as `.promptx`, Markdown, or JSON.
+1. **配置 LLM** — 在设置向导中设置 API 密钥和模型（首次运行自动打开）。
+2. **创建提示词** — 点击左侧面板中的模块类型按钮来添加块。
+3. **编辑内容** — 手动输入或使用 AI 生成为每个块生成内容。
+4. **测试** — 切换到测试面板，运行快速测试，查看评分。
+5. **优化** — 使用三步优化器进行迭代改进。
+6. **导出** — 保存为 `.promptx`、Markdown 或 JSON。
 
-### Keyboard Shortcuts
+### 键盘快捷键
 
-| Key | Action |
-|-----|--------|
-| `Ctrl+S` | Save version snapshot |
-| `Ctrl+Z` | Undo |
-| `Ctrl+Shift+Z` | Redo |
+| 按键 | 操作 |
+|------|------|
+| `Ctrl+S` | 保存版本快照 |
+| `Ctrl+Z` | 撤销 |
+| `Ctrl+Shift+Z` | 重做 |
 
 ---
 
-## Development
+## 开发指南
 
-### Code Quality
+### 代码质量
 
 ```bash
-# Lint
+# 代码检查
 ruff check src/
 
-# Type check
+# 类型检查
 mypy src/
 
-# Run tests
+# 运行测试
 pytest tests/ -v
 ```
 
-### Coding Standards
+### 编码规范
 
-- **Python**: PEP 8 via `ruff` (line length 100, target Python 3.11)
-- **QML**: CamelCase for component names, consistent signal/slot naming
-- **Naming**: Python methods use `snake_case`; QML `@Slot`-exposed methods use `camelCase` (with `noqa: N802` suppression)
-- **Imports**: `from __future__ import annotations` in all modules for lazy annotation evaluation
-- **Thread safety**: `LLMClient` operations are protected by `threading.Lock`; all long-running LLM calls run on `QThread` workers
+- **Python**：遵循 PEP 8，通过 `ruff` 强制（行宽 100，目标 Python 3.11）
+- **QML**：组件名使用大驼峰，信号/槽命名保持一致
+- **命名约定**：Python 方法使用 `snake_case`；暴露给 QML 的 `@Slot` 方法使用 `camelCase`（带 `noqa: N802` 抑制）
+- **导入规范**：所有模块使用 `from __future__ import annotations` 实现惰性注解求值
+- **线程安全**：`LLMClient` 操作受 `threading.Lock` 保护；所有长耗时 LLM 调用运行在 `QThread` 工作线程上
 
-### Architecture
+### 架构设计
 
 ```
-QML View (main.qml + components/)
+QML 视图层 (main.qml + components/)
     ↕ signals / properties
-ViewModel Layer (viewmodels/*.py)
-    ↕ data binding
-Model Layer (models/*.py — QAbstractListModel)
+ViewModel 层 (viewmodels/*.py)
+    ↕ 数据绑定
+Model 层 (models/*.py — QAbstractListModel)
     ↕ CRUD
-Database Layer (db/ — SQLAlchemy ORM)
+数据库层 (db/ — SQLAlchemy ORM)
 ```
 
-The application follows **MVVM** (Model-View-ViewModel):
-- **Model**: `QAbstractListModel` subclasses exposing data to QML
-- **ViewModel**: `QObject` subclasses with `@Property` and `@Signal`/`@Slot`
-- **View**: QML components consuming `contextProperty`-exposed objects
+应用遵循 **MVVM**（Model-View-ViewModel）架构：
+- **Model**：`QAbstractListModel` 子类，向 QML 暴露数据
+- **ViewModel**：`QObject` 子类，带有 `@Property` 和 `@Signal`/`@Slot`
+- **View**：消费 `contextProperty` 暴露对象的 QML 组件
 
 ---
 
-## Building
+## 构建打包
 
-### Windows Installer
+### Windows 安装程序
 
 ```bash
 python scripts/build_windows.py
 ```
 
-This produces a standalone `.exe` via PyInstaller, then wraps it in an NSIS installer.
+此命令通过 PyInstaller 生成独立的 `.exe`，然后用 NSIS 打包为安装程序。
 
-### Manual PyInstaller Build
+### 手动 PyInstaller 构建
 
 ```bash
 pyinstaller PromptBlocks.spec
@@ -264,29 +262,29 @@ pyinstaller PromptBlocks.spec
 
 ---
 
-## License
+## 许可证
 
-This project is proprietary software. All rights reserved.
-
----
-
-## Contributing
-
-Internal contributions are welcome.  Please:
-
-1. Discuss the change via issue or discussion first
-2. Follow the coding standards above
-3. Add tests for new functionality
-4. Run `ruff check` and `pytest` before submitting
-5. Use Conventional Commits for commit messages
+本项目为专有软件，保留所有权利。
 
 ---
 
-## Troubleshooting
+## 贡献指南
 
-| Problem | Solution |
-|---------|----------|
-| GBK encoding error on launch | Use `python launch.py` instead of `promptblocks` entry point |
-| Font icons not rendering | Ensure `src/promptblocks/assets/fonts/Phosphor-*.ttf` exist |
-| LLM call hangs | Check API key and network; litellm timeout is 60s with 3 retries |
-| QML changes not reflected | Delete `%LOCALAPPDATA%\PromptBlocks\qmlcache\` or set `QML_DISABLE_DISK_CACHE=1` |
+欢迎内部贡献。请遵循以下规则：
+
+1. 先通过 Issue 或讨论沟通变更内容
+2. 遵循上述编码规范
+3. 为新功能添加测试
+4. 提交前运行 `ruff check` 和 `pytest`
+5. 使用 Conventional Commits 规范编写提交信息
+
+---
+
+## 常见问题
+
+| 问题 | 解决方案 |
+|------|----------|
+| 启动时报 GBK 编码错误 | 使用 `python launch.py` 代替 `promptblocks` 入口点 |
+| 字体图标不显示 | 确认 `src/promptblocks/assets/fonts/Phosphor-*.ttf` 文件存在 |
+| LLM 调用卡住 | 检查 API 密钥和网络；litellm 超时 60s，最多 3 次重试 |
+| QML 修改未生效 | 删除 `%LOCALAPPDATA%\PromptBlocks\qmlcache\` 或设置 `QML_DISABLE_DISK_CACHE=1` |

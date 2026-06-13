@@ -1,4 +1,4 @@
-# PromptBlocks
+﻿# PromptBlocks
 
 > 桌面级提示词工程 IDE —— 以可视化模块化工作流编排、测试、优化并导出 LLM 提示词。
 
@@ -264,7 +264,7 @@ pyinstaller PromptBlocks.spec
 
 ## 许可证
 
-本项目为专有软件，保留所有权利。
+本项目采用 [MIT 许可证](LICENSE) 开源。
 
 ---
 

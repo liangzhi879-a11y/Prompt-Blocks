@@ -1,0 +1,79 @@
+# ── Python ──
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+*.manifest
+*.spec
+
+# ── Temporary debug/patch scripts ──
+_*.py
+_*.qml
+
+# ── Virtual environments ──
+.venv/
+venv/
+env/
+*.virtualenv
+
+# ── IDE / Editor ──
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── Lint & Type Checker caches ──
+.ruff_cache/
+.mypy_cache/
+
+# ── Test caches ──
+.pytest_cache/
+
+# ── Database ──
+*.db
+*.db-journal
+*.db-wal
+
+# ── Build artifacts ──
+*.exe
+*.msi
+*.dmg
+*.app
+
+# ── OS files ──
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Environment & secrets ──
+.env
+.env.*
+*.secret
+
+# ── Package lock files ──
+package-lock.json
+uv.lock
+package.json
+node_modules/
+
+# ── Documentation drafts ──
+project.md
+
+# ── Test artifacts ──
+test_*.png
+screenshot_*.png
+test_*.promptx
+*.promptx
+test_models.py
+
+# ── Superpowers / Brainstorm artefacts ──
+.superpowers/
+.trae/
+.claude/
+
+# ── GitHub templates ──
+.github/

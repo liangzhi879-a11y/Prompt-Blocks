@@ -1,0 +1,52 @@
+[project]
+name = "promptblocks"
+version = "0.1.0"
+description = "PromptBlocks - Prompt engineering desktop application"
+requires-python = ">=3.11"
+dependencies = [
+    "pyside6",
+    "sqlalchemy",
+    "alembic",
+    "litellm",
+    "pydantic",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+    "mypy",
+    "pyinstaller>=6.0",
+]
+
+[project.scripts]
+promptblocks = "promptblocks.main:main"
+promptblocks-build = "scripts.build:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/promptblocks"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.promptblocks]
+version = "0.1.0"
+app_name = "PromptBlocks"
+publisher = "PromptBlocks"
+file_extension = ".pbproj"

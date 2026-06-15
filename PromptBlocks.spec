@@ -19,18 +19,27 @@ block_cipher = None
 
 
 def collect_qml_files():
-    """收集所有 QML 文件。"""
+    """收集所有 QML 文件。
+
+    在 PyInstaller 中 ``__file__`` 位于 ``_internal/promptblocks/``，
+    因此 QML 目录必须放在 ``promptblocks/qml`` 下，
+    这样 ``Path(__file__).parent / "qml"`` 才能正确解析。
+    """
     datas = []
     if QML_DIR.exists():
-        datas.append((str(QML_DIR), "qml"))
+        datas.append((str(QML_DIR), "promptblocks/qml"))
     return datas
 
 
 def collect_resource_files():
-    """收集资源文件（图标等）。"""
+    """收集资源文件（图标等）。
+
+    同理，资源目录必须放在 ``promptblocks/resources`` 下，
+    与 ``Path(__file__).parent / "resources"`` 保持一致。
+    """
     datas = []
     if RESOURCES_DIR.exists():
-        datas.append((str(RESOURCES_DIR), "resources"))
+        datas.append((str(RESOURCES_DIR), "promptblocks/resources"))
     return datas
 
 

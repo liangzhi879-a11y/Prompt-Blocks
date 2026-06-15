@@ -268,6 +268,28 @@ pyinstaller PromptBlocks.spec
 
 ---
 
+## 开发声明
+
+本项目使用以下开发工具和框架构建：
+
+| 类别 | 工具 / 框架 | 用途 |
+|------|------------|------|
+| 语言 | Python 3.12+ | 主要开发语言 |
+| UI 框架 | PySide6 / Qt 6 / QML | 桌面界面与交互 |
+| 架构模式 | MVVM | 数据绑定与关注点分离 |
+| LLM 接入 | litellm | 统一 100+ 大模型 API 调用 |
+| 数据库 | SQLAlchemy + Alembic + SQLite | ORM、迁移与本地存储 |
+| 图标系统 | Phosphor Icons (PUA) | 统一矢量图标 |
+| 打包工具 | PyInstaller | Windows EXE 分发 |
+| 代码质量 | ruff / mypy / pytest | 代码检查与测试 |
+| 版本控制 | Git + GitHub | 源码管理 |
+| AI 辅助开发 | Trae IDE + GLM | 代码生成与审查辅助 |
+
+> **声明**：本项目核心架构与业务逻辑由开发团队设计并实现。AI 辅助工具仅用于代码补全、
+> 审查建议和文档生成，所有代码均经人工审核确认后方可合入。
+
+---
+
 ## 贡献指南
 
 欢迎内部贡献。请遵循以下规则：

@@ -236,7 +236,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True,
+    console=False,
     icon=icon_arg,
     version="version_info.txt" if (PROJECT_ROOT / "version_info.txt").exists() else None,
 )

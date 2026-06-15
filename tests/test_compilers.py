@@ -146,11 +146,11 @@ class TestLLMClient:
     def test_from_app_config(self):
         config = MagicMock()
         config.get_llm_model.return_value = "deepseek/deepseek-chat"
-        config.get_llm_api_key.return_value = "sk-test"
-        config.get_llm_api_base.return_value = "https://api.deepseek.com"
-        client = LLMClient.from_app_config(config)
-        assert client.model_name == "deepseek/deepseek-chat"
-        assert client.api_key == "sk-test"
+        config.get_llm_api_key.return_value = "test-api-key-placeholder"
+    config.get_llm_api_base.return_value = "https://api.deepseek.com"
+    client = LLMClient.from_app_config(config)
+    assert client.model_name == "deepseek/deepseek-chat"
+    assert client.api_key == "test-api-key-placeholder"
         assert client.api_base == "https://api.deepseek.com"
 
 

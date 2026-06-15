@@ -55,6 +55,11 @@ desktop.ini
 .env
 .env.*
 *.secret
+*.pem
+*.p12
+*.pfx
+*.key
+credentials*.json
 
 # ── Package lock files ──
 package-lock.json

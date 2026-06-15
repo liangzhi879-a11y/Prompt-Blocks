@@ -216,6 +216,13 @@ class PromptBlocksApp:
         self._engine.load(QUrl.fromLocalFile(str(main_qml)))
 
         if not self._engine.rootObjects():
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.critical(
+                None,
+                "PromptBlocks - 加载失败",
+                f"无法加载 QML 界面文件。\n\n路径：{main_qml}\n\n"
+                "请确认 qml 目录已随程序一起分发。",
+            )
             return -1
 
         _t2 = time.perf_counter()

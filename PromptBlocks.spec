@@ -43,22 +43,26 @@ def collect_alembic_files():
 
 
 def collect_litellm_data():
-    """收集 litellm 的数据文件（模型定价、tokenizer 等）。
+    """收集 litellm 的数据文件（模型定价、tokenizer、容器端点等）。
 
-    只收集核心数据文件，排除 proxy/guardrails 等大型子包。
+    递归收集所有 JSON 文件，但排除：
+    - proxy/guardrails 子目录（含特殊字符文件名，且客户端不需要）
+    - 文件名含括号等特殊字符的文件（PyInstaller COLLECT 无法处理）
     """
     datas = []
     try:
         import litellm
         litellm_dir = Path(litellm.__file__).parent
-        # Only collect from top-level and litellm_core_utils subdirectory
-        for json_file in litellm_dir.glob("*.json"):
-            datas.append((str(json_file), "litellm"))
-        core_utils_dir = litellm_dir / "litellm_core_utils"
-        if core_utils_dir.exists():
-            for json_file in core_utils_dir.rglob("*.json"):
-                rel_path = json_file.relative_to(core_utils_dir)
-                datas.append((str(json_file), str(Path("litellm") / "litellm_core_utils" / rel_path.parent)))
+        for json_file in litellm_dir.rglob("*.json"):
+            rel = json_file.relative_to(litellm_dir)
+            # Skip proxy/guardrails (not needed at runtime, has problematic filenames)
+            rel_str = str(rel)
+            if "guardrails" in rel_str:
+                continue
+            # Skip filenames with special characters that break PyInstaller COLLECT
+            if any(c in json_file.name for c in "()[]{}"):
+                continue
+            datas.append((str(json_file), str(Path("litellm") / rel.parent)))
     except ImportError:
         pass
     return datas

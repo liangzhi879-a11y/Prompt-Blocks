@@ -42,13 +42,26 @@ def main() -> int:
         app = PromptBlocksApp(sys.argv)
         return app.run()
     except Exception:
-        # In console-less mode, write the traceback to a log file for diagnosis.
         tb = traceback.format_exc()
         if sys.stderr:
             sys.stderr.write(tb)
+        # Write crash log
         log_path = os.path.join(os.path.expanduser("~"), "PromptBlocks_crash.log")
         with open(log_path, "w", encoding="utf-8") as f:
             f.write(tb)
+        # Show error dialog so the user knows something went wrong
+        try:
+            from PySide6.QtWidgets import QApplication, QMessageBox
+            _app = QApplication.instance() or QApplication(sys.argv)
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setWindowTitle("PromptBlocks - 启动失败")
+            msg.setText("PromptBlocks 启动时发生错误，程序将退出。")
+            msg.setInformativeText(f"错误日志已保存至：{log_path}")
+            msg.setDetailedText(tb)
+            msg.exec()
+        except Exception:
+            pass
         return 1
 
 

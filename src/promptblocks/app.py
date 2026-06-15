@@ -16,6 +16,9 @@ class PromptBlocksApp:
     def __init__(self, argv: list[str]) -> None:
         _t0 = time.perf_counter()
 
+        # Force UTF-8 mode for litellm JSON loading in packaged environments
+        os.environ["PYTHONUTF8"] = "1"
+
         # Basic style — full customization (Fluent Design via Theme.qml)
         os.environ.setdefault("QT_QUICK_CONTROLS_STYLE", "Basic")
         # Enable QML disk cache for faster subsequent launches.
@@ -45,8 +48,9 @@ class PromptBlocksApp:
         from PySide6.QtCore import qInstallMessageHandler
         import sys as _sys
         def _qt_handler(mode, ctx, msg):
-            _sys.stderr.write(f"[Qt] {msg}\n")
-            _sys.stderr.flush()
+            if _sys.stderr:
+                _sys.stderr.write(f"[Qt] {msg}\n")
+                _sys.stderr.flush()
         qInstallMessageHandler(_qt_handler)
         self._qt_handler = _qt_handler  # prevent GC
 
@@ -110,44 +114,55 @@ class PromptBlocksApp:
         print(f"[perf] PromptBlocksApp.__init__ took {_t1 - _t0:.2f}s", flush=True)
 
     def _create_app_icon(self) -> QIcon:
-        """Load the brand SVG logo and render it into a QIcon.
+        """Load the brand icon for taskbar, Alt+Tab, and window title.
 
-        Uses PB-logo.svg (a #0E3A5C deep-navy puzzle-piece mark) for the
-        taskbar, Alt+Tab, and window title contexts.  Renders at multiple
-        resolutions for crisp Hi-DPI display.
+        Priority: bundled ICO -> dev SVG -> programmatic fallback.
         """
-        logo_path = Path(__file__).parent.parent.parent / "logo-design" / "PB-logo.svg"
-        icon = QIcon(str(logo_path.resolve()))
+        # Priority 1: bundled ICO (works in both dev and PyInstaller EXE)
+        ico_path = Path(__file__).parent / "resources" / "icons" / "app.ico"
+        icon = QIcon(str(ico_path.resolve()))
+        if not icon.isNull():
+            return icon
 
-        # Fallback: render SVG to pixmap if QIcon direct load fails
-        if icon.isNull():
-            sizes = [16, 24, 32, 48, 64, 128, 256]
-            icon = QIcon()
-            bg_color = QColor("#0E3A5C")
-            fg_color = QColor("#F9F9F9")
+        # Priority 2: project-root SVG (dev only, skip if path contains non-ASCII)
+        svg_path = Path(__file__).parent.parent.parent / "logo-design" / "PB-logo.svg"
+        try:
+            svg_str = str(svg_path.resolve())
+            if svg_str.isascii():
+                icon = QIcon(svg_str)
+                if not icon.isNull():
+                    return icon
+        except Exception:
+            pass
 
-            for size in sizes:
-                pixmap = QPixmap(size, size)
-                pixmap.fill(Qt.transparent)
+        # Fallback: programmatic icon
+        sizes = [16, 24, 32, 48, 64, 128, 256]
+        icon = QIcon()
+        bg_color = QColor("#0E3A5C")
+        fg_color = QColor("#F9F9F9")
 
-                painter = QPainter(pixmap)
-                painter.setRenderHint(QPainter.Antialiasing, True)
+        for size in sizes:
+            pixmap = QPixmap(size, size)
+            pixmap.fill(Qt.transparent)
 
-                painter.setBrush(bg_color)
-                painter.setPen(Qt.NoPen)
-                corner_radius = max(2, size // 8)
-                painter.drawRoundedRect(0, 0, size, size, corner_radius, corner_radius)
+            painter = QPainter(pixmap)
+            painter.setRenderHint(QPainter.Antialiasing, True)
 
-                font = painter.font()
-                font.setFamilies(["Segoe UI", "Segoe UI Symbol", "Microsoft YaHei", "sans-serif"])
-                font.setPixelSize(max(8, int(size * 0.6)))
-                font.setBold(True)
-                painter.setFont(font)
-                painter.setPen(fg_color)
-                painter.drawText(pixmap.rect(), Qt.AlignCenter, "PB")
+            painter.setBrush(bg_color)
+            painter.setPen(Qt.NoPen)
+            corner_radius = max(2, size // 8)
+            painter.drawRoundedRect(0, 0, size, size, corner_radius, corner_radius)
 
-                painter.end()
-                icon.addPixmap(pixmap)
+            font = painter.font()
+            font.setFamilies(["Segoe UI", "Segoe UI Symbol", "Microsoft YaHei", "sans-serif"])
+            font.setPixelSize(max(8, int(size * 0.6)))
+            font.setBold(True)
+            painter.setFont(font)
+            painter.setPen(fg_color)
+            painter.drawText(pixmap.rect(), Qt.AlignCenter, "PB")
+
+            painter.end()
+            icon.addPixmap(pixmap)
 
         return icon
 

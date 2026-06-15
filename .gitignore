@@ -7,7 +7,9 @@ dist/
 build/
 *.egg
 *.manifest
+# Keep PromptBlocks.spec in version control (build configuration)
 *.spec
+!PromptBlocks.spec
 
 # ── Temporary debug/patch scripts ──
 _*.py

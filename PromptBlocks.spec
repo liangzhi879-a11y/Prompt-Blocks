@@ -12,8 +12,9 @@ PROJECT_ROOT = Path(SPECPATH)
 SRC_DIR = PROJECT_ROOT / "src" / "promptblocks"
 QML_DIR = SRC_DIR / "qml"
 RESOURCES_DIR = SRC_DIR / "resources"
+ASSETS_DIR = SRC_DIR / "assets"
 ALEMBIC_DIR = PROJECT_ROOT / "alembic"
-ICON_PATH = RESOURCES_DIR / "icons" / "app.ico"
+ICON_PATH = PROJECT_ROOT / "logo-design" / "PB-logo-3种尺寸.ico"
 
 block_cipher = None
 
@@ -48,6 +49,19 @@ def collect_alembic_files():
     datas = []
     if ALEMBIC_DIR.exists():
         datas.append((str(ALEMBIC_DIR), "alembic"))
+    return datas
+
+
+def collect_assets_files():
+    """收集 assets 文件（Phosphor 图标字体等）。
+
+    必须放在 ``promptblocks/assets`` 下，与
+    ``Path(__file__).parent / "assets"`` 保持一致，
+    否则界面内的 Phosphor 图标字体无法注册，图标显示异常。
+    """
+    datas = []
+    if ASSETS_DIR.exists():
+        datas.append((str(ASSETS_DIR), "promptblocks/assets"))
     return datas
 
 
@@ -114,6 +128,7 @@ all_binaries = []
 
 all_datas.extend(collect_qml_files())
 all_datas.extend(collect_resource_files())
+all_datas.extend(collect_assets_files())
 all_datas.extend(collect_alembic_files())
 all_datas.extend(collect_litellm_data())
 

@@ -4,6 +4,20 @@ import os
 import sys
 import traceback
 
+# ─ Hide console window immediately on Windows ─────────────────────────────
+# We use PyInstaller's ``run.exe`` bootloader (console=True) because the
+# ``runw.exe`` bootloader resolves ``sys._MEIPASS`` via ANSI Win32 APIs,
+# which corrupts non-ASCII (Chinese) characters in the install path.
+# Hiding the console as early as possible minimises the visible flash.
+if sys.platform == "win32":
+    try:
+        import ctypes
+        _hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+        if _hwnd:
+            ctypes.windll.user32.ShowWindow(_hwnd, 0)  # SW_HIDE
+    except Exception:
+        pass
+
 # Force UTF-8 mode before any imports that may read text files (e.g. litellm)
 os.environ["PYTHONUTF8"] = "1"
 
@@ -15,43 +29,6 @@ if sys.platform == "win32":
     )
     os.environ.setdefault("TIKTOKEN_CACHE_DIR", _tiktoken_cache)
 
-
-def _fix_frozen_path() -> None:
-    """Fix ``sys._MEIPASS`` encoding when using the runw.exe bootloader.
-
-    PyInstaller's ``runw.exe`` bootloader resolves the application directory
-    via ANSI Win32 APIs (``GetModuleFileNameA``), which corrupts non-ASCII
-    characters (e.g. Chinese) in the install path.  ``run.exe`` uses the
-    Unicode variant and works correctly, but shows a console window.
-
-    This function re-resolves the path using the Unicode API
-    (``GetModuleFileNameW``) and patches ``sys._MEIPASS`` /
-    ``sys.executable`` so that all subsequent ``Path(__file__)`` lookups
-    work correctly.  This allows us to use ``console=False`` (runw.exe)
-    for a clean, no-console startup experience.
-    """
-    if not getattr(sys, "frozen", False):
-        return
-    if sys.platform != "win32":
-        return
-    try:
-        import ctypes
-        buf = ctypes.create_unicode_buffer(512)
-        ctypes.windll.kernel32.GetModuleFileNameW(None, buf, 512)
-        real_exe = buf.value
-        # _MEIPASS points to the _internal subdirectory next to the EXE
-        real_meipass = os.path.join(os.path.dirname(real_exe), "_internal")
-        # Patch _MEIPASS to the correct Unicode path
-        if hasattr(sys, "_MEIPASS"):
-            sys._MEIPASS = real_meipass
-        # Also fix sys.executable for consistency
-        sys.executable = real_exe
-    except Exception:
-        pass
-
-
-# Fix Unicode path before any imports that rely on sys._MEIPASS
-_fix_frozen_path()
 
 from promptblocks.app import PromptBlocksApp
 

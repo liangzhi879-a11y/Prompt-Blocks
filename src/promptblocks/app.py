@@ -213,15 +213,30 @@ class PromptBlocksApp:
 
         # Step 4: Load main QML
         main_qml = qml_dir / "main.qml"
-        self._engine.load(QUrl.fromLocalFile(str(main_qml)))
 
-        if not self._engine.rootObjects():
+        # Use QQmlComponent for synchronous loading with detailed error reporting
+        from PySide6.QtQml import QQmlComponent
+        component = QQmlComponent(self._engine, QUrl.fromLocalFile(str(main_qml)))
+        if component.isError():
+            error_msgs = "\n".join(str(e) for e in component.errors())
             from PySide6.QtWidgets import QMessageBox
             QMessageBox.critical(
                 None,
                 "PromptBlocks - 加载失败",
                 f"无法加载 QML 界面文件。\n\n路径：{main_qml}\n\n"
-                "请确认 qml 目录已随程序一起分发。",
+                f"错误详情：\n{error_msgs}",
+            )
+            return -1
+
+        root_obj = component.create()
+        if root_obj is None:
+            error_msgs = "\n".join(str(e) for e in component.errors())
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.critical(
+                None,
+                "PromptBlocks - 加载失败",
+                f"无法创建 QML 根对象。\n\n路径：{main_qml}\n\n"
+                f"错误详情：\n{error_msgs}",
             )
             return -1
 

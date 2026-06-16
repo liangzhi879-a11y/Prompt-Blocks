@@ -14,7 +14,7 @@ QML_DIR = SRC_DIR / "qml"
 RESOURCES_DIR = SRC_DIR / "resources"
 ASSETS_DIR = SRC_DIR / "assets"
 ALEMBIC_DIR = PROJECT_ROOT / "alembic"
-ICON_PATH = PROJECT_ROOT / "logo-design" / "PB-logo-3种尺寸.ico"
+ICON_PATH = PROJECT_ROOT / "logo-design" / "PB-logo.ico"
 
 block_cipher = None
 
@@ -246,7 +246,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,
+    console=True,
     icon=icon_arg,
     version="version_info.txt" if (PROJECT_ROOT / "version_info.txt").exists() else None,
 )

@@ -224,6 +224,16 @@ a = Analysis(
     cipher=block_cipher,
 )
 
+# ── Trim unnecessary binaries ────────────────────────────────────────────────
+# Remove opengl32sw.dll (Mesa software OpenGL ~20 MB).  Qt on modern Windows
+# uses DirectX (ANGLE) or hardware OpenGL drivers; Mesa is only a last-resort
+# fallback and is dead weight for 99 % of users.
+a.binaries = [
+    (name, path, ty)
+    for (name, path, ty) in a.binaries
+    if "opengl32sw" not in name
+]
+
 pyz = PYZ(a.pure, cipher=block_cipher)
 
 exe = EXE(
